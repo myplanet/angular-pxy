@@ -1,0 +1,21 @@
+{
+  "name": "angular-pxy",
+  "main": "angular-pxy.js",
+  "version": "0.0.1",
+  "authors": [
+    "Ates Goral <ates.g@myplanet.com>"
+  ],
+  "description": "Per-scope promise proxy for Angular",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "angular",
+    "promise",
+    "pxy"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/myplanetdigital/angular-pxy"
+}

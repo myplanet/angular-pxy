@@ -1,0 +1,23 @@
+{
+  "name": "angular-pxy",
+  "version": "0.0.1",
+  "description": "Pre-scope promise proxy for Angular",
+  "main": "angular-pxy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/myplanetdigital/angular-pxy.git"
+  },
+  "keywords": [
+    "angular",
+    "promise",
+    "pxy"
+  ],
+  "author": "Ates Goral <ates@magnetiq.com> (http://magnetiq.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/myplanetdigital/angular-pxy/issues"
+  }
+}
