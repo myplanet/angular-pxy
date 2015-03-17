@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta encoding="UTF-8" />
+    <title>angular-pxy</title>
+    <link rel="icon" type="image/png" href="//cdn.rawgit.com/myplanetdigital/gh-pages-theme/v1.0.0/assets/favicon.png" />
+    <link rel="stylesheet" href="//cdn.rawgit.com/myplanetdigital/gh-pages-theme/v1.0.0/assets/fonts.css" />
+    <link rel="stylesheet" href="//cdn.rawgit.com/myplanetdigital/gh-pages-theme/v1.0.0/theme.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.9/angular.js"></script>
+    <script src="//cdn.rawgit.com/myplanetdigital/angular-pxy/v0.0.1/angular-pxy.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad();
+
+        angular.module('demo', [ 'mp.pxy' ]);
+    </script>
+</head>
+<body>
+    <header>
+        <div class="content-wrap">
+            <a href="http://myplanet.com" class="logo" title="Myplanet">Myplanet</a>
+            <h1><a href=".">angular-pxy</a></h1>
+            <h2>Per-scope promise proxy for Angular</h2>
+        </div>
+    </header>
+    <nav>
+        <div class="content-wrap">
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#download">Download <strong>v0.0.1</strong></a></li>
+                <li><a href="#usage">Usage</a></li>
+                <li><a href="https://github.com/myplanetdigital/angular-pxy">View on <strong>GitHub</strong></a></li>
+            </ul>
+        </div>
+    </nav>
+    <article ng-app="demo">
+        <section>
+            <div class="content-wrap">
+                <h3 id="overview">Overview</h3>
+
+                <p><strong>angular-pxy</strong> extends scope objects with a <code>$pxy()</code> method that proxies promises through a <a href="https://github.com/atesgoral/pxy">Pxy</a> instance that is automatically invalidated when the scope is destroyed. This helps prevent:</p>
+                <ul>
+                    <li>Pending asynchronous operations from causing side effects after the scope in which they were initiated is destroyed (e.g. an HTTP fetch continuing to excercise the backend, then returning a large payload, and then updating an object long after the scope is abandoned).</li>
+                    <li>The hassle of explicitly cancelling pending operations (e.g. a timeout or interval).</li>
+                </ul>
+                <p>Head over to <a href="https://github.com/atesgoral/pxy">Pxy documentation</a> for a more detailed explanation of the use cases.</p>
+            </div>
+        </section>
+        <section>
+            <div class="content-wrap">
+                <h3 id="download">Download</h3>
+
+                <p>Grab the latest from <a href="https://github.com/myplanetdigital/angular-pxy/releases">GitHub</a> or use your favorite package manager:</p>
+
+                <h4>Via Bower</h4>
+
+                <pre><code class="lang-sh">bower install angular-pxy</code></pre>
+
+                <h4>Via NPM</h4>
+
+                <pre><code class="lang-sh">npm install angular-pxy</code></pre>
+
+                <h3 id="usage">Usage</h3>
+
+                <p>Include <strong>angular-pxy.js</strong> in your application,
+                    after Angular is included.</p>
+
+                <pre><code class="lang-html"><!--
+-->&lt;script src=&quot;path/to/angular.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;path/to/angular-pxy.js&quot;&gt;&lt;/script&gt;<!--
+                --></code></pre>
+
+                <p>You may use an AMD or CommonJS loader as well.</p>
+
+                <p>Initialize your Angular application with the <strong>mp.pxy</strong> module as a dependency:</p>
+
+                <pre><code class="lang-js"><!--
+-->angular.module('app', [ 'mp.pxy' ]);<!--
+                --></code></pre>
+
+                <p>Find instances where you're initiating asynchronous operations and getting back promises. You might also have some code for explicitly cancelling pending timers:</p>
+
+                <pre><code class="lang-js"><!--
+-->var fetch = $http.get(...),
+    timeout = $timeout(...);
+
+fetch.then(function () {
+    // Will still get called after the scope is destroyed
+}, function () {
+    // Will still get called after the scope is destroyed
+});
+
+timeout.then(function () {
+    // Will still get called after the scope is destroyed
+    timeout = null;
+});
+
+// Cleanup boilerplate
+$scope.$on('$destroy', function () {
+    if (timeout) {
+        $timeout.cancel($timeout);
+    }
+});<!--
+                --></code></pre>
+
+                <p>Use the <code>$pxy()</code> scope method to bind them to the scope's lifetime and get back proxies. The proxies work exactly the same way as your original promises:</p>
+
+                <pre><code class="lang-js"><!--
+-->var fetch = $scope.$pxy($http.get(...)),
+    timeout = $scope.$pxy($timeout(...));
+
+fetch.then(function () {
+    // Won't get called after the scope is destroyed
+}, function () {
+    // Won't get called after the scope is destroyed
+});
+
+timeout.then(function () {
+    // Won't get called after the scope is destroyed
+    timeout = null;
+});
+
+// Scope $destroy handler is no longer needed
+// The timer will automatically get cancelled<!--
+                --></code></pre>
+
+                <p>When the scope is destroyed, <strong>angular-pxy</strong> will automatically invalidate the Pxy instance and also cancel any promises that are originating from the <strong>$timeout</strong> and <strong>$interval</strong> services.</p>
+
+                <p>You can also define proprietary promise cancellation recipes by tapping into <strong>$pxyProvider</strong> at the configuration phase of your application:</p>
+
+                <pre><code class="lang-js"><!--
+-->app.config([ '$pxyProvider', function ($pxyProvider) {
+    $pxyProvider.onCancelPromise = function (promise) {
+        // Cancel underlying asynchronous operation via app-specific
+        // cancellation mechanism if the promise is recognized
+        if (isProprietaryOperationPromise(promise)) {
+            cancelProprietaryOperation(promise);
+            // Return true to prevent default promise cancellation checks
+            return true;
+        }
+    };
+}]);<!--
+                --></code></pre>
+            </div>
+        </section>
+    </article>
+    <footer>
+        <div class="content-wrap">
+            Made with <span class="love" title="love">love</span> by
+            <a href="https://github.com/atesgoral">Ates</a>
+            from
+            <a href="http://myplanet.com/">Myplanet</a>.
+        </div>
+    </footer>
+</body>
+</html>
