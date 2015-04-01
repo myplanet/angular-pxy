@@ -1,6 +1,6 @@
 {
   "name": "angular-pxy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pre-scope promise proxy for Angular",
   "main": "angular-pxy.js",
   "scripts": {
