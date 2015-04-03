@@ -6,4 +6,4 @@ angular-pxy extends scope objects with a `$pxy()` method that proxies promises t
 * The hassle of explicitly cancelling pending operations (e.g. a timeout or interval).
 Head over to [Pxy documentation](https://github.com/atesgoral/pxy) for a more detailed explanation of the use cases.
 
-[Demo and documentation](http://myplanetdigital.github.io/angular-pxy/)
+[Demo and documentation](http://myplanet.github.io/angular-pxy/)
