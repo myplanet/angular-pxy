@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/myplanetdigital/angular-pxy.git"
+    "url": "git://github.com/myplanet/angular-pxy.git"
   },
   "keywords": [
     "angular",
     "promise",
     "pxy"
   ],
-  "author": "Ates Goral <ates@magnetiq.com> (http://magnetiq.com/)",
+  "author": "Ates Goral <ates.g@myplanet.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/myplanet/angular-pxy/issues"
