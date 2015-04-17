@@ -99,7 +99,7 @@ timeout.then(function () {
 // Cleanup boilerplate
 $scope.$on('$destroy', function () {
     if (timeout) {
-        $timeout.cancel($timeout);
+        $timeout.cancel(timeout);
     }
 });<!--
                 --></code></pre>
