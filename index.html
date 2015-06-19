@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.9/angular.js"></script>
+    <script src="//cdn.rawgit.com/atesgoral/pxy/v0.0.2/pxy.js"></script>    
     <script src="//cdn.rawgit.com/myplanet/angular-pxy/v1.0.3/angular-pxy.js"></script>
     <script>
         hljs.initHighlightingOnLoad();
@@ -35,6 +36,54 @@
         </div>
     </nav>
     <article ng-app="demo">
+        <section class="showcase">
+            <div class="content-wrap">
+                <div class="showcase-example">
+                    <script>
+                    angular
+                        .module('demo')
+                        .run(function ($rootScope) {
+                            $rootScope.showCounts = false;
+                            $rootScope.counts = 0;
+                            $rootScope.pxyCounts = 0;
+                        })
+                        .controller('CountController', function ($rootScope, $interval) {
+                            $interval(function () {
+                                $rootScope.counts++;
+                            }, 1000).progress(function () {
+                                console.log('progress');
+                            });
+                        })
+                        .controller('PxyCountController', function ($scope, $rootScope, $interval) {
+                            $scope.$pxy($interval(function () {
+                                $rootScope.pxyCounts++;
+                            }, 1000));
+                        });
+                    </script>
+                    <label>
+                        <input type="checkbox" ng-model="showCounts">
+                        Show counts
+                    </label>
+                    <div ng-if="showCounts" ng-controller="CountController">
+                        {{ counts }}
+                    </div>
+                    <div ng-if="showCounts" ng-controller="PxyCountController">
+                        {{ pxyCounts }}
+                    </div>
+                </div>
+                <div class="showcase-content">
+                    <h3>Live Demo</h3>
+
+                    <p>...</p>
+
+                    <h4>Demo Source</h4>
+
+                    <pre><code class="lang-html"><!--
+--><!--
+                    --></code></pre>
+                </div>
+            </div>
+        </section>
         <section>
             <div class="content-wrap">
                 <h3 id="overview">Overview</h3>
